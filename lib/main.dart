@@ -82,7 +82,7 @@ class _HomeState extends State<Home> {
           } else if (data.isEmpty) {
             return const Center(
               child: Text(
-                'لا توجد تعاملات لليوم',
+                'لا توجد تعاملات',
                 style: textStyle,
               ),
             );

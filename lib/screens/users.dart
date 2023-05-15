@@ -23,8 +23,22 @@ class _UsersState extends State<Users> {
           future: db.get(table: 'users'),
           builder: (context, AsyncSnapshot snapshot) {
             List data = snapshot.data ?? [];
+            if (snapshot.connectionState == ConnectionState.waiting) {
+              return const Center(
+                child: CircularProgressIndicator(
+                  color: primaryColor,
+                ),
+              );
+            } else if (data.isEmpty) {
+              return const Center(
+                child: Text(
+                  'لم تضف مجندين بعد',
+                  style: textStyle,
+                ),
+              );
+            }
             return ListView(
-            padding: const EdgeInsets.all(padding),
+              padding: const EdgeInsets.all(padding),
               children: List.generate(
                 data.length,
                 (i) => Container(
