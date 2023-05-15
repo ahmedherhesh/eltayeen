@@ -3,6 +3,7 @@ import 'package:get/get.dart';
 import 'package:soldiers_food/helpers/constants.dart';
 import 'package:soldiers_food/helpers/db.dart';
 import 'package:soldiers_food/widgets/appbar.dart';
+import 'package:flutter/services.dart';
 
 class AddTransaction extends StatefulWidget {
   const AddTransaction({super.key});
@@ -17,14 +18,68 @@ class _AddTransactionState extends State<AddTransaction> {
   List items = [];
   int qty = 1;
   int? userId, itemId;
+  showSnackBar(String text) {
+    var snackBar = SnackBar(
+      backgroundColor: primaryColor,
+      content: Container(
+        alignment: Alignment.center,
+        child: Text(
+          '$text',
+          style: textStyle,
+        ),
+      ),
+      duration: Duration(milliseconds: 500),
+    );
+    ScaffoldMessenger.of(context).showSnackBar(snackBar);
+  }
+
   getUsers() async {
     users = await db.get(table: 'users');
+    if (users.isEmpty) {
+      showSnackBar('أضف مجندين');
+      Get.back();
+    }
     setState(() => users);
   }
 
   getItems() async {
     items = await db.get(table: 'items');
+    if (items.isEmpty) {
+      showSnackBar('أضف طعام');
+      Get.back();
+    }
     setState(() => items);
+  }
+
+  String arNumToEn(String input) {
+    const english = ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9'];
+    const arabic = ['۰', '۱', '۲', '۳', '۴', '۵', '۶', '۷', '۸', '۹'];
+
+    for (int i = 0; i < arabic.length; i++) {
+      input = input.replaceAll(arabic[i], english[i]);
+    }
+
+    return input;
+  }
+
+  GlobalKey<FormState> formState = GlobalKey<FormState>();
+  addTransaction() async {
+    if (formState.currentState!.validate()) {
+      if (itemId == null || userId == null) return;
+      var insertItem = await db.insert(
+        table: 'transactions',
+        data: {
+          'adminId': 1,
+          'userId': userId,
+          'itemId': itemId,
+          'qty': qty,
+          'date': date,
+        },
+      );
+      if (insertItem != null) {
+        Get.back(result: 1);
+      }
+    }
   }
 
   @override
@@ -41,6 +96,7 @@ class _AddTransactionState extends State<AddTransaction> {
       child: Scaffold(
         appBar: customAppBar('معامله جديده'),
         body: Form(
+          key: formState,
           child: Container(
             padding: const EdgeInsets.all(padding),
             margin: const EdgeInsets.only(top: 10),
@@ -54,6 +110,12 @@ class _AddTransactionState extends State<AddTransaction> {
                         child: DropdownButtonFormField(
                           onChanged: (val) {
                             userId = int.parse('$val');
+                          },
+                          validator: (value) {
+                            if (value.toString().trim() == '') {
+                              return 'هذا الحقل مطلوب';
+                            }
+                            return null;
                           },
                           hint: const Text('المجندين'),
                           items: List.generate(
@@ -81,6 +143,12 @@ class _AddTransactionState extends State<AddTransaction> {
                           onChanged: (val) {
                             itemId = int.parse('$val');
                           },
+                          validator: (value) {
+                            if (value.toString().trim() == '') {
+                              return 'هذا الحقل مطلوب';
+                            }
+                            return null;
+                          },
                           hint: const Text('الطعام'),
                           items: List.generate(
                             items.length,
@@ -106,6 +174,15 @@ class _AddTransactionState extends State<AddTransaction> {
                     onChanged: (val) {
                       qty = val.isNotEmpty ? int.parse(val) : 1;
                     },
+                    keyboardType: TextInputType.number,
+                    inputFormatters: <TextInputFormatter>[FilteringTextInputFormatter.digitsOnly],
+                    validator: (value) {
+                      value = arNumToEn(value.toString().trim());
+                      if (value == '') {
+                        return 'هذا الحقل مطلوب';
+                      }
+                      return null;
+                    },
                     decoration: const InputDecoration(
                       border: OutlineInputBorder(
                         borderSide: BorderSide(
@@ -119,24 +196,7 @@ class _AddTransactionState extends State<AddTransaction> {
                 MaterialButton(
                   color: primaryColor,
                   textColor: Colors.white,
-                  onPressed: () async {
-                    if (itemId == null || userId == null) {
-                      return;
-                    }
-                    var insertItem = await db.insert(
-                      table: 'transactions',
-                      data: {
-                        'adminId': 1,
-                        'userId': userId,
-                        'itemId': itemId,
-                        'qty': qty,
-                        'date': date,
-                      },
-                    );
-                    if (insertItem != null) {
-                      Get.back(result: 1);
-                    }
-                  },
+                  onPressed: addTransaction,
                   child: const Text(
                     'إضافة',
                     style: textStyle,

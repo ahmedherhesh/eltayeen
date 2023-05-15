@@ -13,9 +13,20 @@ class AddUser extends StatefulWidget {
 
 class _AddUserState extends State<AddUser> {
   String? fullname;
+  DB db = DB();
+
+  GlobalKey<FormState> formState = GlobalKey<FormState>();
+  addUser() async {
+    if (formState.currentState!.validate()) {
+      var insertUser = await db.insert(table: 'users', data: {'fullname': fullname, 'role': 'user'});
+      if (insertUser != null) {
+        Get.back(result: 1);
+      }
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
-    DB db = DB();
     return Directionality(
       textDirection: TextDirection.rtl,
       child: Scaffold(
@@ -23,6 +34,7 @@ class _AddUserState extends State<AddUser> {
         body: Padding(
           padding: const EdgeInsets.all(padding),
           child: Form(
+            key: formState,
             child: Container(
               margin: const EdgeInsets.only(top: 10),
               child: Column(
@@ -30,8 +42,16 @@ class _AddUserState extends State<AddUser> {
                   TextFormField(
                     onChanged: (val) {
                       setState(() {
-                        fullname = val;
+                        fullname = val.trim();
                       });
+                    },
+                    validator: (value) {
+                      if (value.toString().trim() == '') {
+                        return 'هذا الحقل مطلوب';
+                      } else if (value.toString().length < lettersCount) {
+                        return 'عدد الأحرف يجب ان تكون اكثر من $lettersCount ';
+                      }
+                      return null;
                     },
                     decoration: const InputDecoration(
                       border: OutlineInputBorder(
@@ -46,12 +66,7 @@ class _AddUserState extends State<AddUser> {
                   MaterialButton(
                     color: primaryColor,
                     textColor: Colors.white,
-                    onPressed: () async {
-                      var insertUser = await db.insert(table: 'users', data: {'fullname': fullname, 'role': 'user'});
-                      if (insertUser != null) {
-                        Get.back(result: 1);
-                      }
-                    },
+                    onPressed: addUser,
                     child: const Text(
                       'إضافة',
                       style: textStyle,

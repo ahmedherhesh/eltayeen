@@ -15,9 +15,20 @@ class _AddFoodState extends State<AddFood> {
   String? itemName;
   DB db = DB();
   List items = [];
+
   getItems() async {
     items = await db.get(table: 'items');
     setState(() => items);
+  }
+
+  GlobalKey<FormState> formState = GlobalKey<FormState>();
+  addFood() async {
+    if (formState.currentState!.validate()) {
+      var insertItem = await db.insert(table: 'items', data: {'title': itemName});
+      if (insertItem != null) {
+        Get.back(result: 1);
+      }
+    }
   }
 
   @override
@@ -33,6 +44,7 @@ class _AddFoodState extends State<AddFood> {
       child: Scaffold(
         appBar: customAppBar('إضافة طعام'),
         body: Form(
+          key: formState,
           child: Container(
             padding: const EdgeInsets.all(padding),
             margin: const EdgeInsets.only(top: 10),
@@ -65,7 +77,15 @@ class _AddFoodState extends State<AddFood> {
                       )
                     : const SizedBox(),
                 TextFormField(
-                  onChanged: (val) => setState(() => itemName = val),
+                  onChanged: (val) => setState(() => itemName = val.trim()),
+                  validator: (value) {
+                    if (value.toString().trim() == '') {
+                      return 'هذا الحقل مطلوب';
+                    } else if (value.toString().length < lettersCount) {
+                      return 'عدد الأحرف يجب ان تكون اكثر من $lettersCount ';
+                    }
+                    return null;
+                  },
                   decoration: const InputDecoration(
                     border: OutlineInputBorder(
                       borderSide: BorderSide(
@@ -79,12 +99,7 @@ class _AddFoodState extends State<AddFood> {
                 MaterialButton(
                   color: primaryColor,
                   textColor: Colors.white,
-                  onPressed: () async {
-                    var insertItem = await db.insert(table: 'items', data: {'title': itemName});
-                    if (insertItem != null) {
-                      Get.back(result: 1);
-                    }
-                  },
+                  onPressed: addFood,
                   child: const Text(
                     'إضافة',
                     style: textStyle,

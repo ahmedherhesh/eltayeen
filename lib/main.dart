@@ -51,6 +51,7 @@ class Home extends StatefulWidget {
 class _HomeState extends State<Home> {
   DB db = DB();
   resetTables() async {
+    await db.delete('DELETE FROM users');
     await db.delete('DELETE FROM items');
     await db.delete('DELETE FROM transactions');
   }
@@ -118,9 +119,12 @@ class _HomeState extends State<Home> {
       ),
       floatingActionButton: SpeedDial(
         backgroundColor: primaryColor,
+        elevation: 1,
         spacing: 12,
         spaceBetweenChildren: 12,
         animatedIcon: AnimatedIcons.menu_close,
+        overlayColor:Colors.blueGrey,
+
         children: [
           SpeedDialChild(
             child: const Icon(Icons.add_circle),
