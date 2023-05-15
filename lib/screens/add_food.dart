@@ -75,6 +75,7 @@ class _AddFoodState extends State<AddFood> {
                     labelText: 'إسم المنتج',
                   ),
                 ),
+                const SizedBox(height: 8),
                 MaterialButton(
                   color: primaryColor,
                   textColor: Colors.white,
