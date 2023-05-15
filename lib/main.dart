@@ -24,7 +24,11 @@ class MyApp extends StatelessWidget {
       debugShowCheckedModeBanner: false,
       title: appTitle,
       home: const Home(),
-      theme: ThemeData(primaryColor: primaryColor,primarySwatch: Colors.blueGrey),
+      theme: ThemeData(
+        fontFamily: 'Cairo',
+        primaryColor: primaryColor,
+        primarySwatch: Colors.blueGrey,
+      ),
       routes: {
         'home': (context) => const Home(),
         'add_user': (context) => const AddUser(),
