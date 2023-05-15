@@ -19,37 +19,33 @@ class _UsersState extends State<Users> {
       textDirection: TextDirection.rtl,
       child: Scaffold(
         appBar: customAppBar('المجندين'),
-        body: ListView(
-          children: [
-            FutureBuilder(
-              future: db.get(table: 'users'),
-              builder: (context, AsyncSnapshot snapshot) {
-                List data = snapshot.data ?? [];
-                return ListView(
-                padding: const EdgeInsets.all(padding),
-                  children: List.generate(
-                    data.length,
-                    (i) => Container(
-                      decoration: BoxDecoration(
-                        color: primaryColor,
-                        borderRadius: BorderRadius.circular(8),
-                      ),
-                      margin: const EdgeInsets.only(bottom: 8),
-                      child: ListTile(
-                        textColor: Colors.white,
-                        title: Text(data[i]['fullname']),
-                        leading: const Icon(
-                          Icons.person,
-                          color: Colors.white,
-                        ),
-                        onTap: () {},
-                      ),
-                    ),
+        body: FutureBuilder(
+          future: db.get(table: 'users'),
+          builder: (context, AsyncSnapshot snapshot) {
+            List data = snapshot.data ?? [];
+            return ListView(
+            padding: const EdgeInsets.all(padding),
+              children: List.generate(
+                data.length,
+                (i) => Container(
+                  decoration: BoxDecoration(
+                    color: primaryColor,
+                    borderRadius: BorderRadius.circular(8),
                   ),
-                );
-              },
-            ),
-          ],
+                  margin: const EdgeInsets.only(bottom: 8),
+                  child: ListTile(
+                    textColor: Colors.white,
+                    title: Text(data[i]['fullname']),
+                    leading: const Icon(
+                      Icons.person,
+                      color: Colors.white,
+                    ),
+                    onTap: () {},
+                  ),
+                ),
+              ),
+            );
+          },
         ),
         floatingActionButton: FloatingActionButton(
           onPressed: () async {
