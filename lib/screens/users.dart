@@ -18,7 +18,7 @@ class _UsersState extends State<Users> {
     return Directionality(
       textDirection: TextDirection.rtl,
       child: Scaffold(
-        appBar: customAppBar('المجندين'),
+        appBar: customAppBar(title:'المجندين'),
         body: FutureBuilder(
           future: db.get(table: 'users'),
           builder: (context, AsyncSnapshot snapshot) {

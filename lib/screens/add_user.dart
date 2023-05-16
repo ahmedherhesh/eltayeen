@@ -30,7 +30,7 @@ class _AddUserState extends State<AddUser> {
     return Directionality(
       textDirection: TextDirection.rtl,
       child: Scaffold(
-        appBar: customAppBar('إضافة مجند'),
+        appBar: customAppBar(title:'إضافة مجند'),
         body: Padding(
           padding: const EdgeInsets.all(padding),
           child: Form(

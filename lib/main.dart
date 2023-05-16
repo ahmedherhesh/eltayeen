@@ -67,7 +67,7 @@ class _HomeState extends State<Home> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: customAppBar(appTitle),
+      appBar: customAppBar(title:appTitle),
       body: FutureBuilder(
         future: db.get(
           table: 'transactions',

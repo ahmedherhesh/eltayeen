@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:soldiers_food/helpers/constants.dart';
 import 'package:soldiers_food/helpers/db.dart';
 import 'package:soldiers_food/widgets/appbar.dart';
@@ -19,7 +20,45 @@ class _HistoryState extends State<History> {
     return Directionality(
       textDirection: TextDirection.rtl,
       child: Scaffold(
-        appBar: customAppBar('المعاملات السابقة'),
+        appBar: customAppBar(
+          title: 'المعاملات السابقة',
+          actions: [
+            IconButton(
+              onPressed: () {
+                showDialog<void>(
+                  context: context,
+                  barrierDismissible: false, // user must tap button!
+                  builder: (BuildContext context) {
+                    return AlertDialog(
+                      title: Container(
+                        alignment: Alignment.center,
+                        child: const Text('هل تريد حذف كل المعاملات '),
+                      ),
+                      actions: <Widget>[
+                        TextButton(
+                          child: const Text('إلغاء'),
+                          onPressed: () {
+                            Get.back();
+                            setState(() {});
+                          },
+                        ),
+                        TextButton(
+                          child: const Text('تأكيد'),
+                          onPressed: () async {
+                            await db.delete('DELETE FROM transactions');
+                            Get.back();
+                            setState(() {});
+                          },
+                        ),
+                      ],
+                    );
+                  },
+                );
+              },
+              icon: Icon(Icons.delete),
+            ),
+          ],
+        ),
         body: Column(
           children: [
             Container(

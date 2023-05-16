@@ -94,7 +94,7 @@ class _AddTransactionState extends State<AddTransaction> {
     return Directionality(
       textDirection: TextDirection.rtl,
       child: Scaffold(
-        appBar: customAppBar('معامله جديده'),
+        appBar: customAppBar(title:'معامله جديده'),
         body: Form(
           key: formState,
           child: Container(

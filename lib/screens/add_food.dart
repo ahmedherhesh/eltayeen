@@ -42,7 +42,7 @@ class _AddFoodState extends State<AddFood> {
     return Directionality(
       textDirection: TextDirection.rtl,
       child: Scaffold(
-        appBar: customAppBar('إضافة طعام'),
+        appBar: customAppBar(title: 'إضافة طعام'),
         body: Form(
           key: formState,
           child: Container(

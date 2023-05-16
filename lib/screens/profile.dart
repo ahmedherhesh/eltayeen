@@ -3,6 +3,7 @@ import 'package:get/get.dart';
 import 'package:soldiers_food/helpers/constants.dart';
 import 'package:soldiers_food/helpers/db.dart';
 import 'package:soldiers_food/widgets/appbar.dart';
+import 'package:soldiers_food/widgets/user_info.dart';
 
 class Profile extends StatefulWidget {
   const Profile({super.key});
@@ -21,7 +22,7 @@ class _ProfileState extends State<Profile> {
     return Directionality(
       textDirection: TextDirection.rtl,
       child: Scaffold(
-        appBar: customAppBar('${fullname}'),
+        appBar: customAppBar(title: fullname),
         body: ListView(
           children: [
             Container(
@@ -42,41 +43,7 @@ class _ProfileState extends State<Profile> {
                     ],
                   ),
                   // User Transactions
-                  FutureBuilder(
-                    future: db.read(''' 
-                                SELECT DISTINCT (itemId),
-                                items.title,
-                                transactions.userId,
-                                SUM(qty) as qty 
-                                FROM `transactions` 
-                                INNER JOIN items ON transactions.itemId = items.id 
-                                AND transactions.userId=$userId 
-                                AND transactions.status=1
-                                GROUP BY itemId ;
-                         '''),
-                    builder: (context, AsyncSnapshot snapshot) {
-                      List data = snapshot.data ?? [];
-                      return Row(
-                        children: List.generate(
-                          data.length,
-                          (i) => Expanded(
-                            child: Column(
-                              children: [
-                                Text(
-                                  '${data[i]['qty']}',
-                                  style: TextStyle(color: Colors.white),
-                                ),
-                                Text(
-                                  '${data[i]['title']}',
-                                  style: TextStyle(color: Colors.white),
-                                ),
-                              ],
-                            ),
-                          ),
-                        ),
-                      );
-                    },
-                  ),
+                  UserInfo(db: db, userId: userId),
                 ],
               ),
             ),
@@ -86,3 +53,4 @@ class _ProfileState extends State<Profile> {
     );
   }
 }
+
