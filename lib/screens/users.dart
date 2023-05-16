@@ -54,7 +54,15 @@ class _UsersState extends State<Users> {
                       Icons.person,
                       color: Colors.white,
                     ),
-                    onTap: () {},
+                    onTap: () {
+                      Get.toNamed(
+                        'profile',
+                        arguments: {
+                          'fullname': data[i]['fullname'],
+                          'userId': data[i]['id'],
+                        },
+                      );
+                    },
                   ),
                 ),
               ),

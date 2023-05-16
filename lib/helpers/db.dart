@@ -42,6 +42,7 @@ class DB {
                     `userId` INTEGER NOT NULL, 
                     `itemId` INTEGER NOT NULL, 
                     `qty` INTEGER NOT NULL,
+                    `status` BOOLEAN NOT NULL DEFAULT 1,
                     `date` DATE NULL
                   );
                 ''');
@@ -49,9 +50,16 @@ class DB {
     print('created');
   }
 
-  get({required String table, Map? where, String? join}) async {
-    String sql = 'SELECT * FROM $table ';
-    
+  read(sql) async {
+    Database? mydb = await db;
+    List<Map> response = await mydb!.rawQuery(sql);
+    return response;
+  }
+
+  get({required String table, String? select, String groupBy = '', Map? where, String? join}) async {
+    select = select ?? '*';
+    String sql = 'SELECT $select FROM $table ';
+
     if (join != null) {
       sql += ' $join ';
     }
@@ -66,7 +74,7 @@ class DB {
         }
       });
     }
-
+    sql += ' $groupBy ';
     Database? mydb = await db;
     List<Map> response = await mydb!.rawQuery(sql);
     return response;

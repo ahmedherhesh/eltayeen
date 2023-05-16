@@ -46,7 +46,7 @@ class _HistoryState extends State<History> {
                 future: db.get(
                   table: 'transactions',
                   join:
-                      "INNER JOIN users ON transactions.userID = users.id INNER JOIN items ON transactions.itemID = items.id AND transactions.date='$selectedDate' ORDER BY id desc;",
+                      "INNER JOIN users ON transactions.userId = users.id INNER JOIN items ON transactions.itemId = items.id AND transactions.date='$selectedDate' ORDER BY id desc;",
                 ),
                 builder: (context, AsyncSnapshot snapshot) {
                   List data = snapshot.data ?? [];

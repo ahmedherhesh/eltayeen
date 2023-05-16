@@ -7,6 +7,7 @@ import 'package:soldiers_food/screens/add_food.dart';
 import 'package:soldiers_food/screens/add_transaction.dart';
 import 'package:soldiers_food/screens/add_user.dart';
 import 'package:soldiers_food/screens/history.dart';
+import 'package:soldiers_food/screens/profile.dart';
 import 'package:soldiers_food/screens/users.dart';
 import 'package:soldiers_food/widgets/appbar.dart';
 
@@ -36,6 +37,7 @@ class MyApp extends StatelessWidget {
         'add_transaction': (context) => const AddTransaction(),
         'history': (context) => const History(),
         'users': (context) => const Users(),
+        'profile': (context) => const Profile(),
       },
     );
   }
@@ -70,7 +72,7 @@ class _HomeState extends State<Home> {
         future: db.get(
           table: 'transactions',
           join:
-              "INNER JOIN users ON transactions.userID = users.id INNER JOIN items ON transactions.itemID = items.id AND transactions.date='$date' ORDER BY id desc;",
+              "INNER JOIN users ON transactions.userId = users.id INNER JOIN items ON transactions.itemId = items.id AND transactions.date='$date' ORDER BY id desc;",
         ),
         builder: (context, AsyncSnapshot snapshot) {
           List data = snapshot.data ?? [];
